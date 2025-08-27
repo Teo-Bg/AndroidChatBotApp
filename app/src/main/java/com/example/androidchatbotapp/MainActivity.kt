@@ -41,20 +41,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
-
-        // Set the configuration options for the LLM Inference task
-        //val taskOptions = LlmInference.LlmInferenceOptions.builder()
-            //.setModelPath("/data/local/tmp/LLM/gemma3-1b-it-int4.task")
-            //.setModelPath("/data/data/com.example.androidchatbotapp/LLM/gemma3-1b-it-int4.task")
-            //.setMaxTopK(64)
-            //.build()
-
-// Create an instance of the LLM Inference task
-        //val llmInference = LlmInference.createFromOptions(this, taskOptions)
-
-
-
         messageViewModel = ViewModelProvider(this).get(MessageViewModel::class.java)
 
         messageViewModel.sendMessage(1L, "What do you think I should do in order to prepare for an interview for a tech job?") { aiResponse ->
@@ -65,12 +51,6 @@ class MainActivity : ComponentActivity() {
             Log.d("MainActivity", aiResponse.toString())
         }
 
-        //val response = llmInference.generateResponse("What do you think I should do in order to prepare for an interview for a tech job?")
-       // Log.d("MainActivity", response.toString())
-
-
-       // val conversation = Conversation(1, "Hello")
-       // Log.d("MainActivity", conversation.toString())
 
     }
 }
