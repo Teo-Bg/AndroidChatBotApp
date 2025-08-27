@@ -28,4 +28,5 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     abstract fun getConversationDao(): ConversationDao
+    abstract fun getMessageDao(): MessageDao
 }
