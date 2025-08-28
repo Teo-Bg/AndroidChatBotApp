@@ -11,6 +11,9 @@ interface ConversationDao {
     @Query("SELECT * FROM conversations")
     suspend fun getAll(): List<Conversation>
 
+    @Query("SELECT COUNT(*) FROM conversations")
+    suspend fun count(): Int
+
     @Insert
     suspend fun insert(conversation: Conversation): Long
 }

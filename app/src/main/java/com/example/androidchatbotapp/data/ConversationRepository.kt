@@ -12,4 +12,8 @@ class ConversationRepository(private val database: AppDatabase) {
     suspend fun getAllConversations(): List<Conversation> {
         return database.getConversationDao().getAll()
     }
+
+    suspend fun getConversationsCount(): Int {
+        return database.getConversationDao().count()
+    }
 }

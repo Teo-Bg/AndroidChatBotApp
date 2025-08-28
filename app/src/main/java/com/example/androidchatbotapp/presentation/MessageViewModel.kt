@@ -40,12 +40,12 @@ class MessageViewModel(application: Application) : AndroidViewModel(application)
     fun sendMessage(conversationId: Long, userText: String, onResult: (Message) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val userMessage = Message(idConversation = conversationId, sentDate = getDateString(), sender = 0, text = userText)
-            //repository.addMessage(userMessage)
+            repository.addMessage(userMessage)
 
             val aiResponseText = llmInference.generateResponse(userText)
 
             val aiMessage = Message(idConversation = conversationId, sentDate = getDateString(), sender = 1, text = aiResponseText)
-            //repository.addMessage(aiMessage)
+            repository.addMessage(aiMessage)
 
             withContext(Dispatchers.Main) {
                 onResult(aiMessage)
