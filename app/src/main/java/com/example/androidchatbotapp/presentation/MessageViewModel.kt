@@ -14,18 +14,20 @@ import kotlinx.coroutines.withContext
 class MessageViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: MessageRepository
-    private val llmInference: LlmInference
+    private var llmInference: LlmInference? = null
 
     init {
         val messageDao = AppDatabase.getInstance(application).getMessageDao()
         repository = MessageRepository(messageDao)
 
-        val taskOptions = LlmInference.LlmInferenceOptions.builder()
-            .setModelPath("/data/data/com.example.androidchatbotapp/LLM/gemma3-1b-it-int4.task")
-            .setMaxTopK(64)
-            .build()
+        viewModelScope.launch(Dispatchers.IO) {
+            val taskOptions = LlmInference.LlmInferenceOptions.builder()
+                .setModelPath("/data/data/com.example.androidchatbotapp/LLM/gemma3-1b-it-int4.task")
+                .setMaxTopK(64)
+                .build()
 
-        llmInference = LlmInference.createFromOptions(application, taskOptions)
+            llmInference = LlmInference.createFromOptions(application, taskOptions)
+        }
     }
 
     fun loadConversation(conversationId: Long, onResult: (List<Message>) -> Unit) {
@@ -42,7 +44,12 @@ class MessageViewModel(application: Application) : AndroidViewModel(application)
             val userMessage = Message(idConversation = conversationId, sentDate = getDateString(), sender = 0, text = userText)
             repository.addMessage(userMessage)
 
-            val aiResponseText = llmInference.generateResponse(userText)
+            val inference = llmInference
+            val aiResponseText = if (inference != null) {
+                inference.generateResponse(userText)
+            } else {
+                "[Model not ready yet]"
+            }
 
             val aiMessage = Message(idConversation = conversationId, sentDate = getDateString(), sender = 1, text = aiResponseText)
             repository.addMessage(aiMessage)
@@ -57,6 +64,7 @@ class MessageViewModel(application: Application) : AndroidViewModel(application)
         return java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
             .format(java.util.Date())
     }
+}
 
     // do not touch this function
 
@@ -95,4 +103,3 @@ fun sendMessageWithContext(conversationId: Long, userText: String, onResult: (Li
 }
 
  */
-}
