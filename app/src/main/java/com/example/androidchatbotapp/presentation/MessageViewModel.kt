@@ -22,7 +22,7 @@ class MessageViewModel(application: Application) : AndroidViewModel(application)
 
         viewModelScope.launch(Dispatchers.IO) {
             val taskOptions = LlmInference.LlmInferenceOptions.builder()
-                .setModelPath("/data/data/com.example.androidchatbotapp/LLM/gemma3-1b-it-int4.task")
+                .setModelPath("/data/data/com.exampl-e.androidchatbotapp/LLM/gemma31b-it-int4.task")
                 .setMaxTopK(64)
                 .build()
 

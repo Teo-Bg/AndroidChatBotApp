@@ -49,7 +49,6 @@ class ConversationViewModel(application: Application) : AndroidViewModel(applica
         val normalized = normalizeTitle(raw)
         if (normalized.isNotEmpty()) return normalized
 
-        // nume implicit
         val count = repository.getConversationsCount()
         return "Conversation #${count + 1}"
     }
