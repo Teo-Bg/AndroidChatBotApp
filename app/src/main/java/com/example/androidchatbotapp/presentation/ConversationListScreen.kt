@@ -105,7 +105,7 @@ fun ConversationListScreen(
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.createConversation(
-                        rawTitle = newTitle,
+                        rawTitle = generateConversationTitle(newTitle, conversations),
                         onSuccess = { id, _ ->
                             showDialog = false
                             newTitle = ""
@@ -121,6 +121,12 @@ fun ConversationListScreen(
                 TextButton(onClick = { showDialog = false }) { Text("Cancel") }
             }
         )
+    }
+}
+
+fun generateConversationTitle(title: String, conversations: List<Conversation>): String {
+    return title.ifBlank {
+        "Conversation #${conversations.size + 1}"
     }
 }
 

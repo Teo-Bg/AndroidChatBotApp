@@ -1,7 +1,10 @@
 package com.example.androidchatbotapp.presentation
 
+import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.androidchatbotapp.data.AppDatabase
 import com.example.androidchatbotapp.data.MessageRepository
@@ -11,10 +14,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@SuppressLint("SdCardPath")
 class MessageViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: MessageRepository
     private var llmInference: LlmInference? = null
+
+    private val _isModelReady = MutableLiveData(false)
+    val isModelReady: LiveData<Boolean> get() = _isModelReady
 
     init {
         val messageDao = AppDatabase.getInstance(application).getMessageDao()
@@ -22,13 +29,16 @@ class MessageViewModel(application: Application) : AndroidViewModel(application)
 
         viewModelScope.launch(Dispatchers.IO) {
             val taskOptions = LlmInference.LlmInferenceOptions.builder()
-                .setModelPath("/data/data/com.exampl-e.androidchatbotapp/LLM/gemma31b-it-int4.task")
+                .setModelPath("/data/data/com.example.androidchatbotapp/LLM/gemma3-1b-it-int4.task")
                 .setMaxTopK(64)
                 .build()
 
             llmInference = LlmInference.createFromOptions(application, taskOptions)
+            _isModelReady.postValue(true)
         }
     }
+
+    fun isReady() = llmInference != null
 
     fun loadConversation(conversationId: Long, onResult: (List<Message>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {

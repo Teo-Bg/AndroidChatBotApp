@@ -51,7 +51,11 @@ class MainActivity : ComponentActivity() {
         }
 
         // dati pe logcat filtru E2E_TEST
-        runRoomE2ETest()
+        messageViewModel.isModelReady.observe(this) { ready ->
+            if (ready) {
+                runRoomE2ETest()
+            }
+        }
 
 //        messageViewModel = ViewModelProvider(this).get(MessageViewModel::class.java)
 //
@@ -74,7 +78,6 @@ class MainActivity : ComponentActivity() {
             rawTitle = "My first convo",
             onSuccess = { conversationId, finalTitle ->
                 Log.d(TAG, "Conversation created: id=$conversationId, title=\"$finalTitle\"")
-
                 // 2) mesajul userului
                 messageViewModel.sendMessage(
                     conversationId = conversationId,
