@@ -18,8 +18,19 @@ fun AppNavHost(
                     navController.navigate("chat/$convId")
                 },
                 viewModel = conversationViewModel
-            )
+            ) }
+        composable("chat/{conversationId}") { backStackEntry ->
+            val convId = backStackEntry.arguments?.getString("conversationId")?.toLongOrNull()
+            if (convId != null) {
+                ChatScreen(
+                    conversationId = convId,
+                    messageViewModel = messageViewModel,
+                    onBack = { navController.popBackStack()}
+                )
+            } else {
+                //daca id invalid, ne intoarcem in lista
+                navController.popBackStack()
+            }
         }
-        // ChatScreen vine aici dupa
     }
 }
